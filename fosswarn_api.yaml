@@ -1,0 +1,160 @@
+openapi: 3.1.0
+info:
+  title: "FOSSWarn Server API"
+  version: '1.0.0'
+  description: 'This is the API for the FOSS Warn notification Server'
+  termsOfService: todo
+
+  contact:
+    name: FOSS Warn
+    url: https://github.com/nucleus-ffm/foss_warn_server
+    email: fosswarn@posteo.de
+  license:
+    name: license
+    url: todo
+
+servers:
+  - url: https://api.fosswarn.de
+    description: Production server
+  - url: https://api-testing.fosswarn.de
+    description: Testing server
+
+paths:
+  /registration:
+    post:
+      description: register a new client
+      parameters:
+       - in: body
+         name: new_client
+         required: true
+         description: client data for regiser new subscription
+         schema:
+           type: object
+           $ref: '#/components/schemas/new_subscription'
+
+      responses:
+         "200":
+           description: client succesfully registered
+           content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: succesfully registered
+         "400":
+           description: client already registered
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   message:
+                     type: string
+                     example: User already exists please login instead!
+
+    /update:
+        post:
+        description: update subscription
+        parameters:
+        - in: body
+            name: updated config
+            required: true
+            description: updated subscriptions
+            schema:
+            type: object
+            $ref: '#/components/schemas/updated_subscription'
+
+        responses:
+            "200":
+            description: succesfully updated
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    token:
+                        type: string
+                        example: YOURUNIQUESESSIONTOKEN
+            "400":
+            description: failed
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: string
+                        example: Client not registered
+
+    /delete:
+        post:
+        description: delete subscription
+        parameters:
+        - in: body
+            name: updated config
+            required: true
+            description: delete subscriptions
+            schema:
+            type: object
+            $ref: '#/components/schemas/delete'
+
+        responses:
+            "200":
+            description: succesfully delete
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    token:
+                        type: String
+                        example: succesfully deleted
+            "400":
+            description: failed
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: string
+                        example: client could not delted
+
+components:
+  schemas:
+    new_subsrciption:
+       description: new subscription
+       properties:
+         distributor_url:
+           type: string
+           example: https://example.de
+         geocode:
+           type: string
+           example: 1234
+
+    delete:
+       description: delete subscription
+       properties:
+         distributor_url:
+           type: string
+           example: https://example.de
+         reason:
+           type: string
+           example: change distributor
+
+    update_subscription:
+      description: update subscription, send new geocode to subscripe and old to remove
+      properties:
+        distributor_url:
+          type: string
+          example: https://example.de
+        new_geocodes:
+          type: array
+          maxItems: 5
+          example: [12345, 5678, 21323]
+        remove_geocode:
+          type: array
+          maxItems: 5
+          example: [12345, 5678, 21323]

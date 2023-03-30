@@ -1,1 +1,3 @@
-etags.pkl
+/node_modules
+/venv
+/db

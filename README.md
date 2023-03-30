@@ -1,2 +1,6 @@
 # foss_warn_server
-(Beta) Serverpart of FOSS Warn for Push Notifications
+(experimental) Serverpart of FOSS Warn for Push Notifications written with nodeJS, fastify and sqlite
+
+## how to start?
+- install all dependencies
+- execute the `server.js` file with nodeJS
