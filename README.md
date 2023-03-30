@@ -3,4 +3,4 @@
 
 ## how to start?
 - install all dependencies
-- execute the `server.js` file with nodeJS
+- run the file `server.js` with nodeJS
