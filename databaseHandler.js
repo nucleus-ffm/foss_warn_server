@@ -1,27 +1,34 @@
 const sqlite3 = require('sqlite3').verbose();
+var fs = require('fs');
 
 // store the database in global var
 var db = initializeDatabase();
+// printTable();
 
 // open the database and creates the tables return the database
-function initializeDatabase() {
+function initializeDatabase () {
     let db = openDatabase();
     createTable(db);
-    return db;
+    return db;   
 }
 
 // open the database and returns it
 function openDatabase() {
-    return new sqlite3.Database('./db/clients', (err) => {
-        if (err) {
-          return console.error(err.message);
-        }
-        console.log('Connected to the in-memory SQlite database.');
-      });
+  // check if database folder exists and create if not
+  if (!fs.existsSync('./db')){
+    fs.mkdirSync('./db', { recursive: true });
+  }
+  return new sqlite3.Database('./db/clients', (err) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log('Connected to the in-file SQlite database.');
+    });
 }
 
 // creates tables if they not exists and fills the url table with data
 function createTable(db) {
+  console.log("Check if table exists and create if not");
     db.run('CREATE TABLE IF NOT EXISTS clients (ID INTEGER PRIMARY KEY AUTOINCREMENT, distributor_url varchar(255) NOT NULL, geocode varchar(255) NOT NULL);', [], (err, rows) => {
       if (err) {
         throw err;
@@ -32,45 +39,51 @@ function createTable(db) {
       if (err) {
         throw err;
       }
-    })
-
-    db.run(`INSERT OR REPLACE INTO urls (ID, url) VALUES 
-            (0, "https://warnung.bund.de/bbk.mowas/gefahrendurchsagen.json"),
-            (1, "https://warnung.bund.de/bbk.biwapp/warnmeldungen.json"), 
-            (2, "https://warnung.bund.de/bbk.biwapp/warnmeldungen.json"), 
-            (3, "https://warnung.bund.de/bbk.dwd/unwetter.json"), 
-            (4, "https://warnung.bund.de/bbk.lhp/hochwassermeldungen.json");
+    }, () => {
+      db.run(`INSERT OR REPLACE INTO urls (ID, url) VALUES 
+      (0, "https://warnung.bund.de/bbk.mowas/gefahrendurchsagen.json"),
+      (1, "https://warnung.bund.de/bbk.biwapp/warnmeldungen.json"), 
+      (2, "https://warnung.bund.de/bbk.biwapp/warnmeldungen.json"), 
+      (3, "https://warnung.bund.de/bbk.dwd/unwetter.json"), 
+      (4, "https://warnung.bund.de/bbk.lhp/hochwassermeldungen.json");
         `,
         (err, row) => {
             if (err) {
                 throw err;
               }
         });
+     } 
+    );
+    console.log("successfully created tables")
     }
 
 // print all tables in the console
 function printTable() {
-    sql = 'SELECT * from clients; '
-  
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        throw err;
-      }
-      rows.forEach((row) => {
-          console.log(`${row.ID} ${row.distributor_url} ${row.geocode}`);
-        });
-    });
+  console.log("print tables");
+  sql = 'SELECT * from clients; '
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    console.log("\nThe client Database content:");
+    rows.forEach((row) => {
+        console.log(`${row.ID} ${row.distributor_url} ${row.geocode}`);
+      });
+    console.log("--\n");
+  });
 
-    sql = 'SELECT * FROM urls; '
-  
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        throw err;
-      }
-      rows.forEach((row) => {
-          // console.log(`${row.url} ${row.etag}`);
-        });
-    });
+  sql = 'SELECT * FROM urls; '
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    console.log("\nThe urls database content:");
+    rows.forEach((row) => {
+        console.log(`${row.url} ${row.etag}`);
+      });
+    // console.log("--\n");
+  });
 }
 
 // create a new row in the table with the distributor_url and geocode
@@ -79,8 +92,12 @@ function insertNewClient(distributor_url, geocode) {
         if (err) {
           return console.log(err.message);
         }
-    });
-    printTable();
+
+    }).then( (value) => {
+      printTable();
+    }
+    );
+
 }
 
 // create a new row in the table with the distributor_url and geocode

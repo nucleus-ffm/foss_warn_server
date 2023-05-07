@@ -43,7 +43,7 @@ function filterWarnings(jsonData) {
 
 
 // loadJson();
-//database.printTable();
+// database.printTable();
 //database.initializeDatabase();
 
 module.exports = {

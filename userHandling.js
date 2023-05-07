@@ -3,13 +3,19 @@ var database = require('./databaseHandler');
 // register new client in the database 
 function registerSubscription(request) {
     console.log("handle registration");
+    // console.log(request.body);
     console.log(`Distributor url: ${request.body.distributor_url}`);
     console.log(`First Geocode: ${request.body.geocode}`);
 
-    // store distributor URL in Database
-    database.insertNewClient(
-        request.body.distributor_url,
-        request.body.geocode);
+    if(request.body.distributor_url != "" && request.body.geocode != "") {
+        // store distributor URL in Database
+        database.insertNewClient(
+            request.body.distributor_url,
+            request.body.geocode);
+    } else {
+        console.log("distributor_url or geocode is empty")
+    }
+
 }
 
 // update client in database

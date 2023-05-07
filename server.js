@@ -2,6 +2,7 @@
 const fastify = require('fastify')({ logger: false })
 var handler = require('./userHandling');
 var jsonWorker = require('./jsonWorker');
+var database = require('./databaseHandler');
 
 /**
  * @type {import('fastify').RouteShorthandOptions}
@@ -84,12 +85,12 @@ const start = async () => {
     process.exit(1)
   }
 }
-start()
+// start the server
+start() 
 
 /*setInterval(
   jsonWorker.loadJson
   , 3000
 );*/
 
-// for testing
 // jsonWorker.loadJson()
