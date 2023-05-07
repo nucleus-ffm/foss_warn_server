@@ -92,11 +92,8 @@ function insertNewClient(distributor_url, geocode) {
         if (err) {
           return console.log(err.message);
         }
-
-    }).then( (value) => {
-      printTable();
-    }
-    );
+    });
+    printTable();
 
 }
 
