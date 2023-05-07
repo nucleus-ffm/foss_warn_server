@@ -63,17 +63,17 @@ fastify.get('/', async (request, reply) => {
 
 fastify.post('/registration', {new_subscription}, async (request, reply) => {
   handler.registration(request);
-  return { status: 'sucess' }
+  return { status: 'success' }
 })
 
 fastify.post('/update', {updated_subscription}, async (request, reply) => {
   handler.update(request);
-  return { status: 'sucess' }
+  return { status: 'success' }
 })
 
 fastify.post('/remove', {remove_subscription}, async (request, reply) => {
   handler.remove(request);
-  return { status: 'sucess' }
+  return { status: 'success' }
 })
 
 // Run the server!
